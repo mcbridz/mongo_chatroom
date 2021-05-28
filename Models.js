@@ -81,6 +81,7 @@ messageSchema.statics.allMessages = async function () {
         // if (typeof (messages) === 'Object') {
         //     return [messages]
         // }
+        console.log(`SENDING ${messages.length} MESSAGES`)
         return messages
     })
 }
@@ -110,6 +111,7 @@ roomSchema.statics.getRooms = async function () {
         rooms.map(roomObj => {
             output.push(roomObj.name)
         })
+        console.log('SENDING ROOMS ARRAY')
         console.log(output)
         return output
     })

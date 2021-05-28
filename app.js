@@ -29,18 +29,24 @@ module.exports = function (deps) {
 
 
   const server = require('http').createServer(app)
-  const io = new Server(server)
+  const io = require("socket.io")(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"]
+    }
+  })
 
   io.on('connection', (socket) => {
     console.log('a user connected')
-
-    io.emit('all messages', JSON.stringify(Message.allMessages()))
-    console.log(typeof (Message.allMessages()))
+    Message.allMessages().then(messages => {
+      io.emit('all messages', JSON.stringify(messages))
+    })
     
+    Room.getRooms().then(rooms => {
+      io.emit('all rooms', JSON.stringify(rooms))      
+    })
 
-    io.emit('all rooms', JSON.stringify(Room.getRooms()))
 
-    
     socket.on('chat message', (msg) => {
       console.log('message: ' + msg)
       Message.newMessage(msg)
