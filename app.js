@@ -33,11 +33,17 @@ module.exports = function (deps) {
 
   io.on('connection', (socket) => {
     console.log('a user connected')
-    io.emit('all messages', Message.allMessages())
-    io.emit('all rooms', Room.getRooms())
+
+    io.emit('all messages', JSON.stringify(Message.allMessages()))
+    console.log(typeof (Message.allMessages()))
+    
+
+    io.emit('all rooms', JSON.stringify(Room.getRooms()))
+
+    
     socket.on('chat message', (msg) => {
       console.log('message: ' + msg)
-      
+      Message.newMessage(msg)
 
       io.emit('chat message', msg)
     })

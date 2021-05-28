@@ -74,13 +74,13 @@ messageSchema.statics.newMessage = async function (messageData) {
 }
 
 messageSchema.statics.allMessages = async function () {
-    this.find({}).then((err, messages) => {
+    this.find({}, (err, messages) => {        
         if (err) return err
-        console.log('typeof messages: ')
-        console.log(typeof(messages))
-        if (typeof (messages) === 'Object') {
-            return [messages]
-        }
+        // console.log('typeof messages: ')
+        // console.log(messages)
+        // if (typeof (messages) === 'Object') {
+        //     return [messages]
+        // }
         return messages
     })
 }
@@ -104,12 +104,13 @@ roomSchema.statics.newRoom = async function (roomName) {
 }
 
 roomSchema.statics.getRooms = async function () {
-    this.find({}).then((err, rooms) => {
+    this.find({},(err, rooms) => {
         if (err) return err
         let output = []
         rooms.map(roomObj => {
             output.push(roomObj.name)
         })
+        console.log(output)
         return output
     })
 }
