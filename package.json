@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx tape test.js | npx tap-spec",
     "watch-server": "nodemon index.js",
-    "watch-client": "cd client-react && npm start"
+    "watch-client": "cd client-react && npm start",
+    "mongo": "mongod --dbpath=./data"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +18,12 @@
     "tape": "^5.0.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongod": "^2.0.0",
+    "mongodb": "^3.6.9",
+    "mongoose": "^5.12.11",
+    "morgan": "^1.10.0",
     "socket.io": "^4.0.1"
   }
 }

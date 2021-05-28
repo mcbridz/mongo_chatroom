@@ -1,13 +1,29 @@
 const fs = require('fs')
 const express = require('express')
 const { Server } = require('socket.io')
-
+const MongoClient = require('mongodb').MongoClient
 const app = express()
+const cors = require('cors')
+const morgan = require('morgan')
+
 
 app.use(express.static('static'))
 app.use(express.json())
+app.use(cors())
+app.use(morgan('dev'))
 
 module.exports = function (deps) {
+  const dbname = 'chatroom_data'
+  const url = 'mongodb://localhost/' + dbname
+  const mongoose = require('mongoose')
+  mongoose.connect(url,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+  })
+
+
   app.get('/messages', (req, res) => {
     fs.readFile(deps.messagesPath, 'utf8', (err, text) => {
       if (err) {
