@@ -1,23 +1,16 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-function getRooms (messages, newRoom) {
-  console.log(messages)
-  const rooms = messages.map(msg => msg.room)
-  rooms.push(newRoom)
-  const allRooms = rooms.filter(room => room)
-
-  const uniqrooms = Array.from(new Set(allRooms))
-  return uniqrooms
-}
 
 export default function Rooms (props) {
   const [newRoom, setNewRoom] = useState('')
   const history = useHistory()
+  const handleNewRoom = props.handleNewRoom
 
   function addRoom () {
     const newRoom = prompt('enter a new room name: ')
     setNewRoom(newRoom)
+    handleNewRoom(newRoom)
     history.push('/rooms/' + newRoom)
   }
 
@@ -31,7 +24,7 @@ export default function Rooms (props) {
       <label htmlFor='room-select'>Change Room:</label>
       <select onChange={handleChange} value={newRoom} id='room-select'>
         <option value=''>--Select a Room--</option>
-        {getRooms(props.messages, newRoom).map(room => <option key={room} value={room}>{room}</option>)}
+        {props.rooms.map(room => <option key={room} value={room}>{room}</option>)}
       </select>
     </div>
   )

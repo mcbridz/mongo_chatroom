@@ -16,6 +16,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       messages: [],
+      rooms: [],
       nick: ''
     }
   }
@@ -27,12 +28,24 @@ class App extends React.Component {
       console.log('got a message')
       console.log(msg)
     })
-
-    fetch('/messages')
-      .then(res => res.json())
-      .then(newMessages => {
-        this.setState({ messages: newMessages })
-      })
+    socket.on('all messages', messages => {
+      console.log('/////////////////////////////////////////')
+      console.log(messages)
+      console.log('/////////////////////////////////////////')
+      this.setState({ messages:messages })
+    })
+    socket.on('all rooms', rooms => {      
+      console.log('/////////////////////////////////////////')
+      console.log(rooms)
+      console.log('/////////////////////////////////////////')
+      this.setState({ rooms:rooms })
+    })
+    socket.on('new room', room => {
+      console.log('/////////////////////////////////////////')
+      console.log(room)
+      console.log('/////////////////////////////////////////')
+      this.state.rooms.concat(room)
+    })
   }
 
   handleSubmitMessage (text, room) {
@@ -43,6 +56,10 @@ class App extends React.Component {
 
   handleLogin (username) {
     this.setState({ nick: username })
+  }
+
+  handleNewRoom(room) {
+    socket.emit('new room', room)
   }
 
   render () {
@@ -58,8 +75,8 @@ class App extends React.Component {
           </Route>
 
           <Route exact path='/'>
-            <h1>Chatroom phase 5</h1>
-            <Rooms messages={this.state.messages} />
+            <h1>Chatroom phase 6</h1>
+            <Rooms rooms={this.state.rooms} handleNewRoom={this.handleNewRoom.bind(this)}/>
           </Route>
         </Switch>
       </div>
