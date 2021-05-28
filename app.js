@@ -5,6 +5,7 @@ const MongoClient = require('mongodb').MongoClient
 const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
+const jwt = require('jsonwebtoken')
 
 
 app.use(express.static('static'))
