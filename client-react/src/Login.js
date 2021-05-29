@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   useHistory,
   Switch,
   Route,
   Link
 } from 'react-router-dom'
+import useCookie from './useCookie'
+import axios from 'axios'
 
 export default function Login (props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [cookie, setCookie] = useCookie('chatroomCookie', '')
   const history = useHistory()
 
   function handleChangeUsername (event) {
@@ -22,9 +25,21 @@ export default function Login (props) {
   function handleSubmit (event) {
     event.preventDefault()
     console.log(`username: ${username}, password: ${password}`)
-    props.onLogin(username, password)
+    props.onLogin(username, password, setCookie)
     history.push('/')
   }
+  useEffect(() => {
+    console.log('useEffect TRIGGERED')
+    if (cookie) {
+      axios.post(`http://localhost:8000/reverse`, {cookie: cookie})
+        .then(res => {
+          console.log('RESPONSE DATA')
+          console.log(res.data)
+          props.foundUserName(res.data, cookie)
+          history.push('/')
+        })
+    }
+  }, [cookie])
 
   return (
     <>

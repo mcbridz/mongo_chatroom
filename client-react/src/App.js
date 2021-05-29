@@ -14,7 +14,6 @@ import axios from 'axios'
 import io from '../../node_modules/socket.io/client-dist/socket.io.js'
 const socket = io("http://localhost:8000")
 const URL = `${window.location.protocol}//${window.location.hostname}`
-
 class App extends React.Component {
   constructor (props) {
     super(props)
@@ -82,14 +81,15 @@ class App extends React.Component {
     socket.emit('chat message', JSON.stringify(message))
   }
 
-  handleLogin(username, password) {
+  handleLogin(username, password, callback) {
     this.setState({ nick: username })
     axios.post(`http://localhost:8000/login`,{
       username: username,
       password: password,
     }).then((res) => {
       console.log(res.data)
-      this.setState({token: res.data.token})
+      this.setState({ token: res.data.token })
+      callback(res.data.token)
     })
   }
 
@@ -102,7 +102,9 @@ class App extends React.Component {
       this.setState({ nick: '' })
     }
   }
-
+  foundUserName(nick, token) {
+    this.setState({nick: nick, token: token})
+  }
 
   render () {
     return (
@@ -110,7 +112,7 @@ class App extends React.Component {
         {(!this.state.token) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
         <Switch>
           <Route path='/login'>
-            <Login onLogin={this.handleLogin.bind(this)} />
+            <Login onLogin={this.handleLogin.bind(this)} token={this.state.token} foundUserName={ this.foundUserName.bind(this)}/>
           </Route>
 
           <Route path='/register'>

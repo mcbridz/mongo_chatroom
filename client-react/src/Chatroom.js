@@ -1,13 +1,22 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
   useParams,
-  Link
+  Link,
+  useHistory
 } from 'react-router-dom'
 import MessageForm from './MessageForm'
+import useCookie from './useCookie'
 
 export default function Chatroom (props) {
   const { roomname } = useParams()
-
+  
+  const [cookie, setCookie] = useCookie('chatroomCookie', '')
+  let history = useHistory()
+  useEffect(() => {
+    if (!cookie) {
+        history.push('/login')
+      }
+  }, [cookie])
   return (
     <>
       <Link to='/'>Back to Home</Link>

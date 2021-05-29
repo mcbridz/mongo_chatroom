@@ -52,7 +52,17 @@ module.exports = function (deps) {
         const user = await User.signup(req.body.username, req.body.password)
         res.status(201).send(user.sanitize())
     })
-})
+  })
+  app.post('/reverse', (req, res) => {
+    const payload = jwt.decode(req.body.cookie, key)
+    User.findOne({ _id: payload._id }, (err, user) => {
+      console.log('Found something')
+      console.log(user)
+      if (err) return res.status(500).send(err)
+      if (!user) return res.status(400).send('invalid cookie')
+      res.status(200).send(user.username)
+    })
+  })
 
 
   const server = require('http').createServer(app)
