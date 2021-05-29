@@ -76,18 +76,19 @@ class App extends React.Component {
     })
   }
 
-  handleSubmitMessage (nick, text, room) {
-    const message = { nick: nick, room: room, text:text }
+  handleSubmitMessage (nick, text, room, token) {
+    const message = { nick: nick, room: room, text:text, token: token }
     console.log(JSON.stringify(message))
     socket.emit('chat message', JSON.stringify(message))
   }
 
   handleLogin(username, password) {
     this.setState({ nick: username })
-    axios.post(`${URL}/login`,{
+    axios.post(`http://localhost:8000/login`,{
       username: username,
       password: password,
     }).then((res) => {
+      console.log(res.data)
       this.setState({token: res.data.token})
     })
   }
@@ -106,7 +107,7 @@ class App extends React.Component {
   render () {
     return (
       <div className='App'>
-        {(!this.state.nick) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
+        {(!this.state.token) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
         <Switch>
           <Route path='/login'>
             <Login onLogin={this.handleLogin.bind(this)} />
@@ -117,7 +118,7 @@ class App extends React.Component {
           </Route>
 
           <Route path='/rooms/:roomname'>
-            <Chatroom onSubmitMessage={this.handleSubmitMessage.bind(this)} messages={this.state.messages} nick={this.state.nick}/>
+            <Chatroom onSubmitMessage={this.handleSubmitMessage.bind(this)} messages={this.state.messages} nick={this.state.nick} token={this.state.token}/>
           </Route>
 
           <Route exact path='/'>

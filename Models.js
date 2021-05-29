@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-
+const jwt = require('jsonwebtoken')
+const key = '2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b'
 const Schema = mongoose.Schema
 
 
@@ -65,12 +66,18 @@ const messageSchema = new Schema({
 })
 
 messageSchema.statics.newMessage = async function (messageData) {
-    const message = new this()
-    message.text = messageData['text']
-    message.room = messageData['room']
-    message.username = messageData['nick']
-    await message.save()
-    return message
+    const token = messageData['token']
+    const payload = jwt.decode(token, key)
+    const user = await User.findOne({_id: payload._id})
+    if (jwt.verify(token, key) && user) {
+        const message = new this()
+        message.text = messageData['text']
+        message.room = messageData['room']
+        message.username = messageData['nick']
+        await message.save()
+        return message        
+    }
+    return null
 }
 
 messageSchema.statics.allMessages = function () {

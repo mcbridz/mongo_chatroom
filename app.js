@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken')
 const User = require('./Models').User
 const Room = require('./Models').Room
 const Message = require('./Models').Message
-
+const key = '2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b'
 
 app.use(express.static('static'))
 app.use(express.json())
@@ -66,8 +66,8 @@ module.exports = function (deps) {
   io.on('connection', (socket) => {
     console.log('a user connected')
     Message.allMessages().then(messages => {
-      console.log('chained arrow function')
-      console.log(`${messages.length} MESSAGES BEING SENT`)
+      // console.log('chained arrow function')
+      // console.log(`${messages.length} MESSAGES BEING SENT`)
       io.emit('all messages', JSON.stringify(messages))
     })
     
@@ -76,8 +76,8 @@ module.exports = function (deps) {
       rooms.map(roomObj => {
         output.push(roomObj.name)
       })
-      console.log('SENDING ROOMS ARRAY')
-      console.log(output)
+      // console.log('SENDING ROOMS ARRAY')
+      // console.log(output)
       io.emit('all rooms', JSON.stringify(output))      
     })
 
