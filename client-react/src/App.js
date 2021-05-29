@@ -3,13 +3,17 @@ import React from 'react'
 import Rooms from './Rooms'
 import {
   Switch,
-  Route
+  Route,
+  Link
 } from 'react-router-dom'
 import Login from './Login'
 import Chatroom from './Chatroom'
+import Register from './Register'
+import axios from 'axios'
 
 import io from '../../node_modules/socket.io/client-dist/socket.io.js'
 const socket = io("http://localhost:8000")
+const URL = `${window.location.protocol}//${window.location.hostname}`
 
 class App extends React.Component {
   constructor (props) {
@@ -17,7 +21,8 @@ class App extends React.Component {
     this.state = {
       messages: [],
       rooms: [],
-      nick: ''
+      nick: '',
+      token: ''
     }
   }
 
@@ -44,57 +49,75 @@ class App extends React.Component {
 
 
     socket.on('chat message', msg => {
-      console.log('/////////////message/////////////////////')
-      console.log(this.state.messages)
-      this.setState({ messages: this.state.messages.concat(msg) })
-      console.log('got a message')
-      console.log(msg)
-      console.log('/////////////////////////////////////////')
+      // console.log('/////////////message/////////////////////')
+      // console.log(this.state.messages)
+      this.setState({ messages: this.state.messages.concat(JSON.parse(msg)) })
+      // console.log('got a message')
+      // console.log(msg)
+      // console.log('/////////////////////////////////////////')
     })
     socket.on('all messages', messages => {
-      console.log('/////////////messages////////////////////')
-      console.log(JSON.parse(messages))
-      console.log('/////////////////////////////////////////')
-      this.setState({ messages:messages })
+      // console.log('/////////////messages////////////////////')
+      // console.log(JSON.parse(messages))
+      // console.log('/////////////////////////////////////////')
+      this.setState({ messages: JSON.parse(messages) })
     })
     socket.on('all rooms', rooms => {      
-      console.log('///////////////rooms/////////////////////')
-      console.log(rooms)
-      console.log('/////////////////////////////////////////')
-      this.setState({ rooms:rooms })
+      // console.log('///////////////rooms/////////////////////')
+      // console.log(JSON.parse(rooms))
+      // console.log('/////////////////////////////////////////')
+      this.setState({ rooms: JSON.parse(rooms) })
     })
     socket.on('new room', room => {
-      console.log('////////////////new room/////////////////')
-      console.log(room)
-      console.log('/////////////////////////////////////////')
+      // console.log('////////////////new room/////////////////')
+      // console.log(room)
+      // console.log('/////////////////////////////////////////')
       this.state.rooms.concat(room)
     })
   }
 
-  handleSubmitMessage (text, room) {
-    const message = { nick: this.state.nick, room, text }
-    console.log(message)
-    socket.emit('chat message', message)
+  handleSubmitMessage (nick, text, room) {
+    const message = { nick: nick, room: room, text:text }
+    console.log(JSON.stringify(message))
+    socket.emit('chat message', JSON.stringify(message))
   }
 
-  handleLogin (username) {
+  handleLogin(username, password) {
     this.setState({ nick: username })
+    axios.post(`${URL}/login`,{
+      username: username,
+      password: password,
+    }).then((res) => {
+      this.setState({token: res.data.token})
+    })
   }
 
   handleNewRoom(room) {
     socket.emit('new room', room)
   }
 
+  logout() {
+    return () => {
+      this.setState({ nick: '' })
+    }
+  }
+
+
   render () {
     return (
       <div className='App'>
+        {(!this.state.nick) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
         <Switch>
           <Route path='/login'>
             <Login onLogin={this.handleLogin.bind(this)} />
           </Route>
 
+          <Route path='/register'>
+            <Register/>
+          </Route>
+
           <Route path='/rooms/:roomname'>
-            <Chatroom onSubmitMessage={this.handleSubmitMessage.bind(this)} messages={this.state.messages} />
+            <Chatroom onSubmitMessage={this.handleSubmitMessage.bind(this)} messages={this.state.messages} nick={this.state.nick}/>
           </Route>
 
           <Route exact path='/'>

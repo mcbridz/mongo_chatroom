@@ -73,17 +73,8 @@ messageSchema.statics.newMessage = async function (messageData) {
     return message
 }
 
-messageSchema.statics.allMessages = async function () {
-    this.find({}, (err, messages) => {        
-        if (err) return err
-        // console.log('typeof messages: ')
-        // console.log(messages)
-        // if (typeof (messages) === 'Object') {
-        //     return [messages]
-        // }
-        console.log(`SENDING ${messages.length} MESSAGES`)
-        return messages
-    })
+messageSchema.statics.allMessages = function () {
+    return this.find({})
 }
 const Message = mongoose.model('Message', messageSchema)
 
@@ -105,16 +96,17 @@ roomSchema.statics.newRoom = async function (roomName) {
 }
 
 roomSchema.statics.getRooms = async function () {
-    this.find({},(err, rooms) => {
-        if (err) return err
-        let output = []
-        rooms.map(roomObj => {
-            output.push(roomObj.name)
-        })
-        console.log('SENDING ROOMS ARRAY')
-        console.log(output)
-        return output
-    })
+    return this.find({})
+    // this.find({},(err, rooms) => {
+    //     if (err) return err
+    //     let output = []
+    //     rooms.map(roomObj => {
+    //         output.push(roomObj.name)
+    //     })
+    //     console.log('SENDING ROOMS ARRAY')
+    //     console.log(output)
+    //     return output
+    // })
 }
 const Room = mongoose.model('Room', roomSchema)
 

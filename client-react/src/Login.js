@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import {
+  useHistory,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom'
 
 export default function Login (props) {
   const [username, setUsername] = useState('')
@@ -17,7 +22,7 @@ export default function Login (props) {
   function handleSubmit (event) {
     event.preventDefault()
     console.log(`username: ${username}, password: ${password}`)
-    props.onLogin(username)
+    props.onLogin(username, password)
     history.push('/')
   }
 

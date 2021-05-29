@@ -12,7 +12,7 @@ export default function Chatroom (props) {
     <>
       <Link to='/'>Back to Home</Link>
       <h1>{roomname}</h1>
-      <MessageForm onSubmit={props.onSubmitMessage} room={roomname} />
+      {(props.nick)?<MessageForm onSubmit={props.onSubmitMessage} room={roomname} nick={props.nick}/>:<div></div>}
       {props.messages
         .filter(msg => msg.room === roomname)
         .map((msg, index) => <li key={index}>{msg.text}</li>)}

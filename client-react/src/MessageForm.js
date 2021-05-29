@@ -9,7 +9,7 @@ export default function MessageForm (props) {
 
   function handleSubmit (event) {
     event.preventDefault()
-    props.onSubmit(inputValue, props.room)
+    props.onSubmit(props.nick, inputValue, props.room)
   }
 
   return (
