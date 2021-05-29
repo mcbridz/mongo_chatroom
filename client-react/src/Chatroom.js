@@ -15,7 +15,7 @@ export default function Chatroom (props) {
       {(props.token) ? <MessageForm onSubmit={props.onSubmitMessage} room={roomname} nick={props.nick} token={props.token}/>:<div></div>}
       {props.messages
         .filter(msg => msg.room === roomname)
-        .map((msg, index) => <li key={index}>{msg.text}</li>)}
+        .map((msg, index) => <li key={index}>{msg.username}: {msg.text}</li>)}
     </>
   )
 }
