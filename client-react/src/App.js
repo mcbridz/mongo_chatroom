@@ -9,11 +9,12 @@ import {
 import Login from './Login'
 import Chatroom from './Chatroom'
 import Register from './Register'
+import Logout from './Logout'
 import axios from 'axios'
 
 import io from '../../node_modules/socket.io/client-dist/socket.io.js'
 const socket = io("http://localhost:8000")
-const URL = `${window.location.protocol}//${window.location.hostname}`
+// const URL = `${window.location.protocol}//${window.location.hostname}`
 class App extends React.Component {
   constructor (props) {
     super(props)
@@ -99,7 +100,7 @@ class App extends React.Component {
 
   logout() {
     return () => {
-      this.setState({ nick: '' })
+      this.setState({ nick: '', token: '' })
     }
   }
   foundUserName(nick, token) {
@@ -109,7 +110,7 @@ class App extends React.Component {
   render () {
     return (
       <div className='App'>
-        {(!this.state.token) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
+        {(!this.state.token) ? <><Link to='/login'>Login</Link> <Link to='/register'>Register</Link></>: <Link to='/logout' style={{ textDecoration: 'underline' }} onClick={this.logout()}>Logout</Link>}
         <Switch>
           <Route path='/login'>
             <Login onLogin={this.handleLogin.bind(this)} token={this.state.token} foundUserName={ this.foundUserName.bind(this)}/>
@@ -126,6 +127,9 @@ class App extends React.Component {
           <Route exact path='/'>
             <h1>Chatroom phase 6</h1>
             <Rooms rooms={this.state.rooms} handleNewRoom={this.handleNewRoom.bind(this)}/>
+          </Route>
+          <Route path='/logout'>
+            <Logout token={this.state.token}/>
           </Route>
         </Switch>
       </div>

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
-  useHistory,
-  Switch,
-  Route,
-  Link
+  useHistory
 } from 'react-router-dom'
 import useCookie from './useCookie'
 import axios from 'axios'
@@ -38,6 +35,8 @@ export default function Login (props) {
           props.foundUserName(res.data, cookie)
           history.push('/')
         })
+    } else {
+      setCookie('')
     }
   }, [cookie])
 
